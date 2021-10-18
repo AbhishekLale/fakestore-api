@@ -3,7 +3,9 @@ import { Card, ListGroup, ListGroupItem, Button, Col, Image } from 'react-bootst
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom'
 
-const Product = ({ product }) => {
+
+const Product = ({ product,delProduct }) => {
+
     return (
         <Col>
                 <Card style={{ width: '18rem' }}>
@@ -21,8 +23,8 @@ const Product = ({ product }) => {
                         <ListGroupItem>Rating: {product.rating.rate}</ListGroupItem>
                     </ListGroup>
                     <Card.Body>
-                        <Button variant="warning">Edit</Button>
-                        <Button variant="danger" className="m-1">Delete</Button>
+                        <Link className="btn btn-warning" to={`/product/edit/${product.id}`} >Edit</Link>
+                        <Button variant="danger" className="m-1" onClick={() => delProduct(product.id)}>Delete</Button>
                     </Card.Body>
                 </Card>
         </Col>

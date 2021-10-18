@@ -1,33 +1,24 @@
 import React,{useEffect,useState, useRef} from 'react'
-import { getAllProducts, limitProducts } from '../../api/api'
-import Products from '../products/ProductCard'
+import { getAllProducts, limitProducts, deleteProduct } from '../../api/api'
+import Product from '../products/ProductCard'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Button,Form } from 'react-bootstrap'
-import { useHistory } from 'react-router';
+import { Container, Row,Form } from 'react-bootstrap'
 
 
 const Home = () => {
     //Initilising states
-    const [products,setProducts] = useState([])
+    const [products,setProducts] = useState()
     const [isLoading,setIsLoading] = useState(true)
     const checkbox = useRef()
 
+    //fetching limited products
     const getLimitProducts = async () => {
         const res = await limitProducts()
         setProducts(res.data)
         setIsLoading(false)
     }
 
-    const onCheck = () => {
-        if( checkbox.current.checked === true){
-            getLimitProducts()
-        }
-        else{
-            getData()
-        }
-    }
-
-    //fetching data
+    //fetching all products
     const getData = async () => {
         try{
             const res =  await getAllProducts()
@@ -38,10 +29,38 @@ const Home = () => {
             console.log(e)
         }
     }
-    //
+
+    //Limiting products
+    const onCheck = () => {
+        if( checkbox.current.checked === true){
+            getLimitProducts()
+        }
+        else{
+            getData()
+        }
+    }
+
+    //delete product
+    const delProduct = async (id) => {
+        try{
+            const res = await deleteProduct(id)
+            const productData = res.data
+            setProducts(
+                products.filter((product) => {
+                    return product.id !== productData.id
+                })
+            )
+        }
+        catch(e){
+            console.log(e)
+        }    
+    }
+
+    //calling fetch function
     useEffect(() => {
         getData()
     },[])
+
     return isLoading ? (<h2>Loading...</h2>) : (
         <div>
             <h2 className="text-center">Welcome</h2>
@@ -54,7 +73,7 @@ const Home = () => {
                 
             {
                 products.map((product,id) => (
-                    <Products product={product} key={id}/>
+                    <Product product={product} key={id} delProduct={delProduct}/>
                 ))
             }
             </Row>

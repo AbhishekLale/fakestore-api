@@ -3,14 +3,33 @@ import { addNewProduct, getCategory } from '../../api/api';
 import { Container, Form, Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useHistory} from 'react-router-dom'
+import ProductModal from './ProductModal';
 
 const AddProduct = () => {
+    const initialFormData = {
+        title: '',
+        price: 0,
+        description: '',
+        category: '',
+        image: ''
+    }
+
+    const [product,setProduct] = useState(initialFormData)
+    const [productData,setProductData] = useState()
     const [categories, setCategories] = useState()
     const [isLoading, setIsLoading] = useState(true)
-    
+    const [showModal,setShowModal] = useState(false)
     let history = useHistory()
 
+    const onFormChange = (e) => {
+        setProduct({...product,[e.target.name]: e.target.value})
+    }
 
+    const closeModal = () => {
+        setShowModal(false)
+    }
+
+    //getting all categories
     const getCategoryData = async () => {
         const res = await getCategory()
         setCategories(res.data)
@@ -23,9 +42,11 @@ const AddProduct = () => {
 
     const submitForm = async (e) => {
         e.preventDefault()
-        const res = await addNewProduct()
+        const res = await addNewProduct(product)
         console.log(res.data)
-        history.push('/')
+        setProductData(res.data)
+        setShowModal(true)
+        // history.push('/')
     }
 
     return isLoading ? (<h2>Loading...</h2>) : (
@@ -36,7 +57,7 @@ const AddProduct = () => {
                     <Form.Control
                         type="text"
                         name="title"
-                        
+                        onChange= {(e) => onFormChange(e)}
                         required
                         
                     />
@@ -46,7 +67,7 @@ const AddProduct = () => {
                     <Form.Control
                         type="number"
                         name="price"
-                        
+                        onChange= {(e) => onFormChange(e)}
                         required
                         
                     />
@@ -56,12 +77,17 @@ const AddProduct = () => {
                     <Form.Control
                         type="text"
                         name="description"
-                        
+                        onChange= {(e) => onFormChange(e)}
                     />
                     <Form.Label >Description</Form.Label>
                 </Form.Floating>
                 <Form.Group className="mb-3">
-                    <Form.Select className="me-sm-2" name="category" required >
+                    <Form.Select
+                    className="me-sm-2" 
+                    name="category"
+                    onChange= {(e) => onFormChange(e)}
+                    required 
+                    >
                         {
                             categories.map((category, index) => (
                                 <option key={index} value={category}>{category}</option>
@@ -69,18 +95,18 @@ const AddProduct = () => {
                         }
                     </Form.Select>
                 </Form.Group>
-                <Form.Group controlId="formFile" className="mb-3">
+                <Form.Floating  className="mb-3">
                     <Form.Control
-                     type="file" 
+                     type="text" 
                      name="image"
-                    
+                     onChange= {(e) => onFormChange(e)}
                     />
-                    <Form.Label>Image of Product</Form.Label>
-                </Form.Group>
+                    <Form.Label>Image Path</Form.Label>
+                </Form.Floating>
 
                 <Button type="submit" className="btn btn-success">Submit</Button>
             </Form>
-
+            <ProductModal product={productData} showModal={showModal} closeModal={closeModal} />
         </Container>
     )
 }

@@ -23,15 +23,21 @@ export const getCarts = async () => {
     return await api.get("/carts")
 }
 
+export const getUser = async (id) => {
+    return await api.get(`/users/${id}`)
+}
 
 //PUT Requests
+export const updateProduct = async (id , product) => {
+    return await api.put(`/products/${id}`, product)
+}
 
-//POST Requests
+//POST Request
 export const addNewProduct = async (product) => {
     return await api.post(`/products`,product)
 }
 
-//DELETE Requests
+//DELETE Request
 export const deleteProduct = async (id) => {
     return await api.get(`/products/${id}`)
 }
