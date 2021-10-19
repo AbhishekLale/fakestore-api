@@ -6,19 +6,21 @@ import { getUser } from '../../api/api'
 
 const User = ({id}) => {
     const [user,setUser] = useState()
+    const [isloading, setIsLoading] = useState(true)
 
-    const getUserData = async(id) => {
+    const getUserData = async() => {
         const res = await getUser(id)
         setUser(res.data)
+        setIsLoading(false)
     }
 
     useEffect(() => {
         getUserData()
     },[])
-    return(
+    return isloading ? (<React.Fragment> </React.Fragment>) : (
         <React.Fragment>
         <Card.Title>
-            jk
+            {user.name.firstname} {user.name.lastname}
             </Card.Title>
         </React.Fragment>
     )

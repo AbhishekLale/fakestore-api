@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { addNewProduct, getCategory } from '../../api/api';
 import { Container, Form, Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {useHistory} from 'react-router-dom'
+// import {useHistory} from 'react-router-dom'
 import ProductModal from './ProductModal';
 
 const AddProduct = () => {
@@ -19,7 +19,8 @@ const AddProduct = () => {
     const [categories, setCategories] = useState()
     const [isLoading, setIsLoading] = useState(true)
     const [showModal,setShowModal] = useState(false)
-    let history = useHistory()
+    let format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/
+    // let history = useHistory()
 
     const onFormChange = (e) => {
         setProduct({...product,[e.target.name]: e.target.value})
@@ -29,11 +30,17 @@ const AddProduct = () => {
         setShowModal(false)
     }
 
+
     //getting all categories
     const getCategoryData = async () => {
-        const res = await getCategory()
-        setCategories(res.data)
-        setIsLoading(false)
+        try{
+            const res = await getCategory()
+            setCategories(res.data)
+            setIsLoading(false)
+        }
+        catch(e){
+            console.log(e)
+        }
     }
 
     useEffect(() => {
@@ -41,12 +48,17 @@ const AddProduct = () => {
     }, [])
 
     const submitForm = async (e) => {
-        e.preventDefault()
-        const res = await addNewProduct(product)
-        console.log(res.data)
-        setProductData(res.data)
-        setShowModal(true)
-        // history.push('/')
+        try{
+            e.preventDefault()
+            const res = await addNewProduct(product)
+            console.log(res.data)
+            setProductData(res.data)
+            setShowModal(true)
+            // history.push('/')
+        }
+        catch(err){
+            console.log(err)
+        }
     }
 
     return isLoading ? (<h2>Loading...</h2>) : (
@@ -104,7 +116,8 @@ const AddProduct = () => {
                     <Form.Label>Image Path</Form.Label>
                 </Form.Floating>
 
-                <Button type="submit" className="btn btn-success">Submit</Button>
+         
+                <Button type="submit" className="btn btn-success" disabled={!product.title.trim() || !product.category.trim() || format.test(product.title)}>Submit</Button>
             </Form>
             <ProductModal product={productData} showModal={showModal} closeModal={closeModal} />
         </Container>
