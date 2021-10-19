@@ -1,14 +1,14 @@
-import React,{useEffect,useState, useRef} from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { getAllProducts, limitProducts, deleteProduct } from '../../api/api'
 import Product from '../products/ProductCard'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row,Form } from 'react-bootstrap'
+import { Container, Row, Form, Spinner } from 'react-bootstrap'
 
 
 const Home = () => {
     //Initilising states
-    const [products,setProducts] = useState()
-    const [isLoading,setIsLoading] = useState(true)
+    const [products, setProducts] = useState()
+    const [isLoading, setIsLoading] = useState(true)
     const checkbox = useRef()
 
     //fetching limited products
@@ -20,29 +20,29 @@ const Home = () => {
 
     //fetching all products
     const getData = async () => {
-        try{
-            const res =  await getAllProducts()
+        try {
+            const res = await getAllProducts()
             setProducts(res.data)
             setIsLoading(false)
         }
-        catch(e){
+        catch (e) {
             console.log(e)
         }
     }
 
     //Limiting products
     const onCheck = () => {
-        if( checkbox.current.checked === true){
+        if (checkbox.current.checked === true) {
             getLimitProducts()
         }
-        else{
+        else {
             getData()
         }
     }
 
     //delete product
     const delProduct = async (id) => {
-        try{
+        try {
             const res = await deleteProduct(id)
             const productData = res.data
             setProducts(
@@ -51,32 +51,35 @@ const Home = () => {
                 })
             )
         }
-        catch(e){
+        catch (e) {
             console.log(e)
-        }    
+        }
     }
 
     //calling fetch function
     useEffect(() => {
         getData()
-    },[])
+    }, [])
 
-    return isLoading ? (<h2>Loading...</h2>) : (
+    return isLoading ? (
+        <div className="d-flex justify-content-center">
+            <Spinner animation="border" variant="secondary" />
+        </div>) : (
         <div>
             <h2 className="text-center">Welcome</h2>
-            
+
             <Container className="mt-1">
-            <div className="d-flex justify-content-end m-1">
-                <Form.Check label="Limit Products" className="m-1" ref={checkbox} onChange={onCheck} />
-            </div>
-            <Row xs={3}>
-                
-            {
-                products.map((product,id) => (
-                    <Product product={product} key={id} delProduct={delProduct}/>
-                ))
-            }
-            </Row>
+                <div className="d-flex justify-content-end m-1">
+                    <Form.Check label="Limit Products" className="m-1" ref={checkbox} onChange={onCheck} />
+                </div>
+                <Row xs={3}>
+
+                    {
+                        products.map((product, id) => (
+                            <Product product={product} key={id} delProduct={delProduct} />
+                        ))
+                    }
+                </Row>
             </Container>
         </div>
     )

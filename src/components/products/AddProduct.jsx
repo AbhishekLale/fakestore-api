@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { addNewProduct, getCategory } from '../../api/api';
-import { Container, Form, Button } from 'react-bootstrap'
+import { Container, Form, Button, Spinner, Row, Col } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import {useHistory} from 'react-router-dom'
 import ProductModal from './ProductModal';
@@ -19,7 +19,8 @@ const AddProduct = () => {
     const [categories, setCategories] = useState()
     const [isLoading, setIsLoading] = useState(true)
     const [showModal,setShowModal] = useState(false)
-    let format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/
+    // eslint-disable-next-line no-useless-escape
+    let format = /[!@#$%^&*()_+\=\[\]{};':"\\|<>\/?]+/
     // let history = useHistory()
 
     const onFormChange = (e) => {
@@ -61,10 +62,16 @@ const AddProduct = () => {
         }
     }
 
-    return isLoading ? (<h2>Loading...</h2>) : (
+    return isLoading ? ( 
+    <div className="d-flex justify-content-center">
+        <Spinner animation="border" variant="secondary" /> 
+    </div>) : (
         <Container>
             <h2 className="text-center">Add Product </h2>
+            
             <Form onSubmit={(e) => submitForm(e)}>
+            <Row className="justify-content-md-center">
+                <Col xs lg="6">
                 <Form.Floating className="mb-3">
                     <Form.Control
                         type="text"
@@ -100,6 +107,7 @@ const AddProduct = () => {
                     onChange= {(e) => onFormChange(e)}
                     required 
                     >
+                         <option>Choose Category </option>
                         {
                             categories.map((category, index) => (
                                 <option key={index} value={category}>{category}</option>
@@ -116,8 +124,9 @@ const AddProduct = () => {
                     <Form.Label>Image Path</Form.Label>
                 </Form.Floating>
 
-         
-                <Button type="submit" className="btn btn-success" disabled={!product.title.trim() || !product.category.trim() || format.test(product.title)}>Submit</Button>
+                <Button type="submit" className="btn btn-success " disabled={!product.title.trim() || !product.category.trim() || format.test(product.title)}>Submit</Button>
+                    </Col>
+                </Row>
             </Form>
             <ProductModal product={productData} showModal={showModal} closeModal={closeModal} />
         </Container>

@@ -19,6 +19,7 @@ const CartProduct = ({productId}) => {
 
     useEffect(() => {
         getProductData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     return isLoading ? (<React.Fragment> </React.Fragment>) : (

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Col, Card, Button, ListGroup } from 'react-bootstrap'
+import { Col, Card, ListGroup } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import User from './User'
 import CartProduct from './CartProduct';

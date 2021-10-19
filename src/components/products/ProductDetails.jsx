@@ -1,47 +1,50 @@
 import React, { useEffect, useState } from 'react'
 import { getAllProducts } from '../../api/api';
-import { Container, Image } from 'react-bootstrap'
+import { Container, Image, Spinner } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useParams } from 'react-router';
 
 const ProductDetails = () => {
     const [product, setProduct] = useState()
-    const [isLoading,setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
     const { id } = useParams()
-    
+
     const containerStyle = {
         width: "50%",
         border: "solid black 1px"
     }
 
     const getProductData = async () => {
-        try{
+        try {
             const res = await getAllProducts(id)
             setProduct(res.data)
             setIsLoading(false)
         }
-        catch(e){
+        catch (e) {
             console.log(e)
         }
     }
 
     useEffect(() => {
         getProductData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-    return isLoading ? (<h2>Loading..</h2>) :
+    return isLoading ? (<div className="d-flex justify-content-center">
+        <Spinner animation="border" variant="secondary" />
+    </div>) :
         (
-        <Container fluid style={containerStyle}>
-            <div className="d-flex justify-content-center">
-                <Image src={product.image} width={200} height={200}/>
-            </div>
-            <br />
-            <div className="text-center">
-                <strong>{product.title}</strong>
-                <p>price: {product.price}$</p>
-                <p>{product.description}</p>
-            </div>
-        </Container>
-    )
+            <Container fluid style={containerStyle}>
+                <div className="d-flex justify-content-center">
+                    <Image src={product.image} width={200} height={200} />
+                </div>
+                <br />
+                <div className="text-center">
+                    <strong>{product.title}</strong>
+                    <p>price: {product.price}$</p>
+                    <p>{product.description}</p>
+                </div>
+            </Container>
+        )
 }
 
 export default ProductDetails

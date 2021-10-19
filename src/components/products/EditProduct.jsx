@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getAllProducts, getCategory, updateProduct } from '../../api/api'
-import { Container, Form, Button } from 'react-bootstrap'
+import { Container, Form, Button, Spinner, Row, Col } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ProductModal from './ProductModal';
 
@@ -20,7 +20,8 @@ const EditProduct = () => {
     const [categories, setCategories] = useState()
     const [isLoading, setIsLoading] = useState(true)
     const [showModal, setShowModal] = useState(false)
-    let format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/
+    // eslint-disable-next-line no-useless-escape
+    let format = /[!@#$%^&*()_+\=\[\]{};':"\\|<>\/?]+/
 
     const onFormChange = (e) => {
         setProduct({ ...product, [e.target.name]: e.target.value })
@@ -61,11 +62,17 @@ const EditProduct = () => {
 
     useEffect(() => {
         getProductData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-    return isLoading ? (<h2>Loading...</h2>) : (
+    return isLoading ? (
+        <div className="d-flex justify-content-center">
+            <Spinner animation="border" variant="secondary" />
+        </div>) : (
         <Container>
             <h2 className="text-center">Edit Product </h2>
             <Form onSubmit={(e) => submitForm(e)}>
+            <Row className="justify-content-md-center">
+                <Col xs lg="6">
                 <Form.Floating className="mb-3">
                     <Form.Control
                         type="text"
@@ -105,7 +112,7 @@ const EditProduct = () => {
                         value={product.category}
                         required
                     >
-
+                        <option>Choose Category </option>
                         {
                             categories.map((category, index) => (
                                 <option key={index} value={category}>{category}</option>
@@ -122,8 +129,9 @@ const EditProduct = () => {
                     />
                     <Form.Label>Image Path</Form.Label>
                 </Form.Floating>
-
                 <Button type="submit" className="btn btn-success" disabled={!product.title.trim() || !product.category.trim() || format.test(product.title)}>Submit</Button>
+                        </Col>
+                    </Row>
             </Form>
             <ProductModal product={productData} showModal={showModal} closeModal={closeModal} />
         </Container>

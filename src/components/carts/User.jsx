@@ -16,6 +16,7 @@ const User = ({id}) => {
 
     useEffect(() => {
         getUserData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     return isloading ? (<React.Fragment> </React.Fragment>) : (
         <React.Fragment>
