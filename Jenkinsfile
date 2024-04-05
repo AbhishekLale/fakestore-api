@@ -1,20 +1,10 @@
 pipeline {
-    agent none
+    agent {
+        docker { image 'node:20.11.1-alpine3.19' }
+    }
     stages {
-        stage('test-docker') {
-            agent {
-                docker {
-                    image 'node:20.11.1-alpine3.19'
-                }
-            }
+        stage('Test') {
             steps {
-                sh 'node image pull'
-            }
-        }
-
-        stage('Build') { 
-            steps {
-                sh 'date'
                 sh 'node --version'
             }
         }
