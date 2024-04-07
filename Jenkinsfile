@@ -10,7 +10,7 @@ pipeline {
 
         stage('Docker Login') {
             steps {
-                withCredentials([usernamepassword(credentialsId: 'DockerCreds', passwordVariable: 'PASS', usernameVariable: 'USERNAME')])
+                withCredentials([usernamePassword(credentialsId: 'DockerCreds', passwordVariable: 'PASS', usernameVariable: 'USERNAME')])
                 sh "echo $PASS | docker login -u $USERNAME --password-stdin"
                 sh 'docker push abhisheklale/fakestore-fe:latest'
             }
