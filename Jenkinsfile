@@ -1,18 +1,18 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
-            agent {
-                docker {
-                    image 'node:20.11.1-alpine3.19' 
-                    // Run the container on the node specified at the
-                    // top-level of the Pipeline, in the same workspace,
-                    // rather than on a new node entirely:
-                    reuseNode true
-                }
-            }
+        stage('Build Image') {
             steps {
-                sh 'node --version'
+                sh 'docker build -t fakestore-ui .'
+                sh 'docker tag fakestore-ui:latest abhisheklale/fakestore-fe:latest'
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamepassword(credentialsId: 'DockerCreds', passwordVariable: 'PASS', usernameVariable: 'USERNAME')])
+                sh "echo $PASS | docker login -u $USERNAME --password-stdin"
+                sh 'docker push abhisheklale/fakestore-fe:latest'
             }
         }
     }
