@@ -26,6 +26,7 @@ pipeline {
                     sshagent(['web-server-key']) {
                         withCredentials([usernamePassword(credentialsId: 'DockerCreds', passwordVariable: 'PASS', usernameVariable: 'USERNAME')]){
                             sh 'echo $PASS | docker login -u $USERNAME --password-stdin'
+                            sh 'docker pull abhisheklale/fakestore-fe:latest'
                         }
                         sh "ssh -o StrictHostKeyChecking=no ec2-user@3.92.25.217 ${dockerCmd}"
                     }
