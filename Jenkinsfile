@@ -18,5 +18,13 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    def dockerCmd = 'docker run -itd --name faktstore_fe -p 3000:3000 abhisheklale/fakestore-fe:latest'
+                }
+            }
+        }
     }
 }
