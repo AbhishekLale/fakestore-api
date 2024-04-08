@@ -23,6 +23,9 @@ pipeline {
             steps {
                 script {
                     def dockerCmd = 'docker run -itd --name faktstore_fe -p 3000:3000 abhisheklale/fakestore-fe:latest'
+                    sshagent(['web-server-key']) {
+                        sh "ssh -o StrictKeyChecking=no ec2-user@ec2-3-92-25-217 ${dockerCmd}"
+                    }
                 }
             }
         }
