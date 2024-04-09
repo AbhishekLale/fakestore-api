@@ -41,7 +41,7 @@ pipeline {
                     sudo docker run -itd --name faktstore_fe -p 3000:3000 abhisheklale/fakestore-fe:latest
                     '''
                     sshagent(['web-server-key']) {
-                        sh "ssh -o StrictHostKeyChecking=no ec2-user@3.92.25.217"
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@3.92.25.217 ${dockerCmd}"
                     }
                 }
             }
